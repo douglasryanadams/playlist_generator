@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div v-if="token.length < 1">
+    <div v-if="token.length < 1" class="text-center m-5">
       <a
-          href="https://accounts.spotify.com/authorize?response_type=token&client_id=b5881a3f486f4533803ebdb7263a5996&scope=playlist-modify-public&redirect_uri=http%3A%2F%2Flocalhost%3A8080"
-          class="btn btn-primary"
+          v-bind:href="ssoUrl"
+          class="btn btn-success"
       >
-        Log in
+        Click to log in with Spotify!
       </a>
     </div>
     <div v-if="token.length > 0">
@@ -124,7 +124,8 @@ export default {
       trackSelected: "",
       tracksFound: [],
       playlistName: "",
-      saved: false
+      saved: false,
+      ssoUrl: ""
     }
   },
   created() {
@@ -132,7 +133,8 @@ export default {
     const self = this;
     const parsedUrl = new URL(window.location.href)
     const hashValue = parsedUrl.hash
-    if (hashValue) {
+
+    if (hashValue.length > 2) {
       const hashComponents = hashValue.split("&")
       const tokenComponents = hashComponents[0].split('=')
       this.token = tokenComponents[1]
@@ -151,8 +153,22 @@ export default {
           })
           .then(data => (self.userId = data.id))
     }
+
+    const baseUrl = "https://accounts.spotify.com/authorize?";
+    const ssoParams = {
+      response_type: "token",
+      client_id: "b5881a3f486f4533803ebdb7263a5996",
+      scope: "playlist-modify-public",
+      // redirect_uri: "http://localhost:8080"
+      redirect_uri: "https://playlist.builtonbits.com"
+    }
+    const paramString = new URLSearchParams(Object.entries(ssoParams)).toString()
+    self.ssoUrl = baseUrl + paramString
   },
   methods: {
+    getLoginUrl() {
+
+    },
     doSearch: function () {
       console.info('Searching for track')
       const self = this;
