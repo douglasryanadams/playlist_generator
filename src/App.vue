@@ -1,5 +1,5 @@
 <template>
-  <img alt="Vue logo" src="./assets/Spotify_Icon_RGB_Green.png" style="width: 80px;">
+<!--  <img alt="Vue logo" src="./assets/Spotify_Icon_RGB_Green.png" style="width: 80px;">-->
   <Home/>
 </template>
 
@@ -15,12 +15,7 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+body {
+  font-family: "Helvetica Neue", "Helvetica", Arial, sans-serif;
 }
 </style>
