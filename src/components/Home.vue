@@ -8,6 +8,7 @@
         Click to log in with Spotify!
       </a>
     </div>
+
     <div v-if="token.length > 0">
       <div class="row my-3">
         <div class="col mx-5">
@@ -31,7 +32,39 @@
           </form>
         </div>
       </div>
-      <div v-if="tracksFound.length > 0" class="row m-3 text-center">
+
+      <div v-if="tracksSelected.length > 0" class="row">
+        <div class="col mx-5">
+          <h3>Selected Tracks</h3>
+          <table class="table mt-3">
+            <thead>
+            <tr>
+              <th scope="col" class="col-1">&nbsp;</th>
+              <th scope="col" class="col-6">Track Name</th>
+              <th scope="col" class="col-5">Artist</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(track, index) in tracksSelected">
+              <td class="text-center">
+                <button
+                    v-on:click="unselectTrack(index)"
+                    type="button"
+                    class="btn btn-warning"
+                >
+                  <strong>Remove</strong>
+                </button>
+              </td>
+              <td>{{ $filters.truncate(track.name, 60, '...') }}</td>
+              <td>{{ $filters.truncate(track.artists.map(({name}) => name).join(", "), 45, '...') }}</td>
+            </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+
+      <div v-if="tracksFound.length > 0" class="row m-5 text-center">
         <div class="col">
           <div class="row text-left">
             <!--        <label v-if="tracksFound.length > 8" for="playlistName" class="col col-form-label-lg">Playlist Name</label>-->
@@ -57,30 +90,43 @@
             </div>
           </div>
         </div>
+
         <div class="col-4">
           <button
               v-on:click="getRecommendations"
-              v-bind:disabled="trackSelected.length === 0"
+              v-bind:disabled="tracksSelected.length < 1"
               type="button"
               class="btn btn-primary"
           >
-            <span v-if="trackSelected.length > 0">Get Recommendations</span>
-            <span v-else>Select a Track</span>
+            <span v-if="tracksSelected.length > 0">Get Recommendations</span>
+            <span v-else>Select Tracks</span>
           </button>
         </div>
       </div>
-      <div v-if="tracksFound.length > 0" class="row">
-        <div class="col mx-3">
-          <table>
+
+      <div v-if="tracksFound.length > 0" class="row mt-5">
+        <div class="col mx-5">
+          <h3 v-if="tracksFound.length > 8">Recommended Songs</h3>
+          <h3 v-else>Search Results</h3>
+          <table class="table mt-3">
             <thead>
             <tr>
-              <th>Track Name</th>
-              <th>Artist</th>
+              <th scope="col" class="col-1">&nbsp;</th>
+              <th scope="col" class="col-6">Track Name</th>
+              <th scope="col" class="col-5">Artist</th>
             </tr>
             </thead>
             <tbody>
-            <tr v-for="track in tracksFound" v-on:click="selectTrack(track.id)"
-                v-bind:class="{ 'bg-primary': (track.id == trackSelected) , 'text-light': (track.id == trackSelected)}">
+            <tr v-for="track in tracksFound">
+              <td class="text-center">
+                <button
+                    v-on:click="selectTrack(track)"
+                    type="button"
+                    class="btn btn-success"
+                >
+                  <strong>Add</strong>
+                </button>
+              </td>
               <td>{{ $filters.truncate(track.name, 60, '...') }}</td>
               <td>{{ $filters.truncate(track.artists.map(({name}) => name).join(", "), 45, '...') }}</td>
             </tr>
@@ -88,7 +134,6 @@
           </table>
         </div>
       </div>
-
 
       <div class="row m-5">
         <div class="col">
@@ -105,9 +150,6 @@
           </ol>
         </div>
       </div>
-      <!--      <div>-->
-      <!--        UserId: {{ userId }}<br/>-->
-      <!--      </div>-->
     </div>
   </div>
 </template>
@@ -121,7 +163,7 @@ export default {
       token: "",
       userId: "",
       trackSearchTerm: "",
-      trackSelected: "",
+      tracksSelected: [],
       tracksFound: [],
       playlistName: "",
       saved: false,
@@ -166,9 +208,6 @@ export default {
     self.ssoUrl = baseUrl + paramString
   },
   methods: {
-    getLoginUrl() {
-
-    },
     doSearch: function () {
       console.info('Searching for track')
       const self = this;
@@ -188,14 +227,23 @@ export default {
             self.tracksFound = data.tracks.items
           });
     },
-    selectTrack(trackId) {
-      this.trackSelected = trackId
+    selectTrack(track) {
+      console.debug('Selecting track: ', track)
+      this.tracksSelected.push(track);
+    },
+    unselectTrack(index) {
+      console.debug('Unselecting track: ', index)
+      this.tracksSelected.splice(index, 1);
     },
     getRecommendations: function () {
-      console.info('Get recommendations for track: ', this.trackSearchTerm, ' | ', this.trackSelected)
+      console.info('Get recommendations for track: ', this.trackSearchTerm, ' | ', this.tracksSelected)
       const self = this;
+      const seed_tracks = []
+      for (const track of self.tracksSelected) {
+        seed_tracks.push(track['id'])
+      }
       const paramString = new URLSearchParams(Object.entries({
-        seed_tracks: this.trackSelected,
+        seed_tracks: seed_tracks.join(','),
         limit: 50
       })).toString()
 
@@ -256,19 +304,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-table {
-  font-family: arial, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
-}
-
-td, th {
-  border: 1px solid #dddddd;
-  text-align: left;
-  padding: 8px;
-}
-
-.trackSelected {
-  background-color: aquamarine;
-}
 </style>
