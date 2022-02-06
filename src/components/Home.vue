@@ -1,18 +1,21 @@
 <template>
   <div>
-    <div v-if="token.length < 1" class="text-center m-5 p-5">
+    <nav class="navbar navbar-expand navbar-light bg-light justify-content-between px-5">
+      <span class="navbar-brand">Playlist Generator</span>
       <a
           v-bind:href="ssoUrl"
-          class="btn-lg btn-success p-4"
+          v-if="token.length < 1"
+          class="btn btn-success"
       >
-        Click to log in with Spotify!
+        Log in with Spotify
       </a>
-    </div>
+      <span v-if="userId.length > 1">Signed in as: {{ userId }}</span>
+    </nav>
 
     <div v-if="token.length > 0">
       <div class="row my-3">
         <div class="col mx-5">
-          <form v-on:submit="doSearch">
+          <form v-on:submit.prevent="doSearch">
             <div class="row my-3">
               <div class="col">
                 <div class="input-group">
@@ -67,29 +70,25 @@
       <div v-if="tracksSelected.length > 0" class="row mx-5">
         <div class="col">
           <div class="row">
+            <div class="col">&nbsp;</div>
             <div class="col">
-              <label for="maxLoudness" class="form-label">Max Loudness: {{ maxLoudness * 100 }}</label>
-              <input v-model="maxLoudness" type="range" class="form-range" min="0" max="1" step="0.1" id="maxLoudness">
-            </div>
-            <div class="col">
-              <label for="maxValence" class="form-label">Max Valence: {{ maxValence * 100 }} </label>
-              <input v-model="maxValence" type="range" class="form-range" min="0" max="1" step="0.1" id="maxValence">
+              <label for="minLoudness" class="form-label">Min Loudness: {{ minLoudness * 100 }} </label>
+              <input v-model="minLoudness" type="range" class="form-range" min="0" v-bind:max="1" step="0.1"
+                     id="minLoudness">
             </div>
           </div>
           <div class="row">
+            <div class="col">&nbsp;</div>
             <div class="col">
-              <label for="maxEnergy" class="form-label">Max Energy: {{ maxEnergy * 100 }}</label>
-              <input v-model="maxEnergy" type="range" class="form-range" min="0" max="1" step="0.1" id="maxEnergy">
-            </div>
-            <div class="col">
-              <label for="maxAcoustic" class="form-label">Max Acoustic: {{ maxAcoustic * 100 }}</label>
-              <input v-model="maxAcoustic" type="range" class="form-range" min="0" max="1" step="0.1" id="maxAcoustic">
+              <label for="maxLoudness" class="form-label">Max Loudness: {{ maxLoudness * 100 }}</label>
+              <input v-model="maxLoudness" type="range" class="form-range" v-bind:min="0" max="1" step="0.1"
+                     id="maxLoudness">
             </div>
           </div>
         </div>
       </div>
 
-      <div v-if="tracksFound.length > 0" class="row m-5 text-center">
+      <div v-if="tracksFound.length" class="row m-5 text-center">
         <div class="col">
           <div class="row text-left">
             <div v-if="tracksFound.length > 8" class="col-8">
@@ -128,9 +127,9 @@
         </div>
       </div>
 
-      <div v-if="tracksFound.length > 0" class="row mt-5">
+      <div v-if="tracksFound.length" class="row mt-5">
         <div class="col mx-5">
-          <h3 v-if="tracksFound.length > 8">Recommended Songs</h3>
+          <h3 v-if="tracksFound.length > 8">Recommended Songs ({{ tracksFound.length }})</h3>
           <h3 v-else>Search Results</h3>
           <table class="table mt-3">
             <thead>
@@ -147,6 +146,7 @@
                     v-on:click="selectTrack(track)"
                     type="button"
                     class="btn btn-success"
+                    v-bind:disabled="tracksSelected.length >= 5"
                 >
                   <strong>Add</strong>
                 </button>
@@ -159,20 +159,22 @@
         </div>
       </div>
 
-      <div class="row m-5">
-        <div class="col">
-          <p>
-            This site allows you to generate and save a Spotify Playlist!
-          </p>
-          <ol>
-            <li>Search for a song</li>
-            <li>Select the correct song</li>
-            <li>Click 'Get Recommendations'</li>
-            <li>Enter a name for the playlist</li>
-            <li>Click 'Save Playlist'</li>
-            <li>Open Spotify and find your playlist added!</li>
-          </ol>
-        </div>
+    </div>
+    <div class="row m-5">
+      <div class="col">
+        <p>
+          This site allows you to generate and save a Spotify Playlist!
+        </p>
+        <ol>
+          <li>Sign in w/ button in upper right (if necessary)</li>
+          <li>Search for a song</li>
+          <li>Add up to 5 songs</li>
+          <li>Select minimum and maximum loudness of songs if you like</li>
+          <li>Click 'Get Recommendations'</li>
+          <li>Enter a name for the playlist</li>
+          <li>Click 'Save Playlist'</li>
+          <li>Open Spotify and find your playlist added!</li>
+        </ol>
       </div>
     </div>
   </div>
@@ -190,12 +192,9 @@ export default {
       tracksSelected: [],
       tracksFound: [],
       playlistName: "",
-      saved: false,
       ssoUrl: "",
+      minLoudness: 0,
       maxLoudness: 1,
-      maxEnergy: 1,
-      maxValence: 1,
-      maxAcoustic: 1,
     }
   },
   created() {
@@ -203,6 +202,7 @@ export default {
     const self = this;
     const parsedUrl = new URL(window.location.href)
     const hashValue = parsedUrl.hash
+    console.debug('  hash value: ', hashValue)
 
     if (hashValue.length > 2) {
       const hashComponents = hashValue.split("&")
@@ -221,7 +221,9 @@ export default {
               self.token = ""
             }
           })
-          .then(data => (self.userId = data.id))
+          .then(function (data) {
+            self.userId = data.id
+          })
     }
 
     const baseUrl = "https://accounts.spotify.com/authorize?";
@@ -247,7 +249,7 @@ export default {
 
       fetch('https://api.spotify.com/v1/search?' + paramString, {
         headers: {
-          "Authorization": "Bearer " + this.token
+          "Authorization": "Bearer " + self.token
         }
       })
           .then(response => response.json())
@@ -270,14 +272,19 @@ export default {
       for (const track of self.tracksSelected) {
         seed_tracks.push(track['id'])
       }
-      const paramString = new URLSearchParams(Object.entries({
+
+      if (self.maxLoudness <= self.minLoudness) {
+        alert('Max Loudness must be greater than Min Loudness')
+        return
+      }
+      const params = {
         seed_tracks: seed_tracks.join(','),
-        max_loudness: self.maxLoudness,
-        max_valence: self.maxValence,
-        max_energy: self.maxEnergy,
-        max_acousticness: self.maxAcoustic,
         limit: 50
-      })).toString()
+      }
+      if (self.maxLoudness < 1) params['max_loudness'] = self.maxLoudness
+      if (self.minLoudness > 0) params['min_loudness'] = self.minLoudness
+
+      const paramString = new URLSearchParams(Object.entries(params)).toString()
 
       fetch('https://api.spotify.com/v1/recommendations?' + paramString, {
         headers: {
@@ -286,7 +293,11 @@ export default {
       })
           .then(response => response.json())
           .then(function (data) {
-            self.tracksFound = data.tracks
+            if (data.tracks && data.tracks.length > 0) {
+              self.tracksFound = data.tracks
+            } else {
+              alert('No recommendations found for these songs and settings.')
+            }
           });
     },
     addTracks: function (playlistResponse) {
@@ -308,8 +319,8 @@ export default {
         })
       })
           .then(response => response.json())
-          .then(data => function (data) {
-            self.saved = true
+          .then(function (data) {
+            alert('Successfully Saved "' + self.playlistName + '"')
           });
     },
     saveRecommendations: function () {
