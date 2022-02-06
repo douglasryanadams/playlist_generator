@@ -67,26 +67,26 @@
         </div>
       </div>
 
-      <div v-if="tracksSelected.length > 0" class="row mx-5">
-        <div class="col">
-          <div class="row">
-            <div class="col">&nbsp;</div>
-            <div class="col">
-              <label for="minLoudness" class="form-label">Min Loudness: {{ minLoudness * 100 }} </label>
-              <input v-model="minLoudness" type="range" class="form-range" min="0" v-bind:max="1" step="0.1"
-                     id="minLoudness">
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">&nbsp;</div>
-            <div class="col">
-              <label for="maxLoudness" class="form-label">Max Loudness: {{ maxLoudness * 100 }}</label>
-              <input v-model="maxLoudness" type="range" class="form-range" v-bind:min="0" max="1" step="0.1"
-                     id="maxLoudness">
-            </div>
-          </div>
-        </div>
-      </div>
+<!--      <div v-if="tracksSelected.length > 0" class="row mx-5">-->
+<!--        <div class="col">-->
+<!--          <div class="row">-->
+<!--            <div class="col">&nbsp;</div>-->
+<!--            <div class="col">-->
+<!--              <label for="minLoudness" class="form-label">Min Loudness: {{ minLoudness * 100 }} </label>-->
+<!--              <input v-model="minLoudness" type="range" class="form-range" min="0" v-bind:max="1" step="0.1"-->
+<!--                     id="minLoudness">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="row">-->
+<!--            <div class="col">&nbsp;</div>-->
+<!--            <div class="col">-->
+<!--              <label for="maxLoudness" class="form-label">Max Loudness: {{ maxLoudness * 100 }}</label>-->
+<!--              <input v-model="maxLoudness" type="range" class="form-range" v-bind:min="0" max="1" step="0.1"-->
+<!--                     id="maxLoudness">-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
 
       <div v-if="tracksFound.length" class="row m-5 text-center">
         <div class="col">
@@ -169,7 +169,7 @@
           <li>Sign in w/ button in upper right (if necessary)</li>
           <li>Search for a song</li>
           <li>Add up to 5 songs</li>
-          <li>Select minimum and maximum loudness of songs if you like</li>
+<!--          <li>Select minimum and maximum loudness of songs if you like</li>-->
           <li>Click 'Get Recommendations'</li>
           <li>Enter a name for the playlist</li>
           <li>Click 'Save Playlist'</li>
@@ -281,8 +281,8 @@ export default {
         seed_tracks: seed_tracks.join(','),
         limit: 50
       }
-      if (self.maxLoudness < 1) params['max_loudness'] = self.maxLoudness
-      if (self.minLoudness > 0) params['min_loudness'] = self.minLoudness
+      // if (self.maxLoudness < 1) params['max_loudness'] = self.maxLoudness
+      // if (self.minLoudness > 0) params['min_loudness'] = self.minLoudness
 
       const paramString = new URLSearchParams(Object.entries(params)).toString()
 
