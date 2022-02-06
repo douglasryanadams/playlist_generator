@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div v-if="token.length < 1" class="text-center m-5">
+    <div v-if="token.length < 1" class="text-center m-5 p-5">
       <a
           v-bind:href="ssoUrl"
-          class="btn btn-success"
+          class="btn-lg btn-success p-4"
       >
         Click to log in with Spotify!
       </a>
@@ -64,10 +64,34 @@
         </div>
       </div>
 
+      <div v-if="tracksSelected.length > 0" class="row mx-5">
+        <div class="col">
+          <div class="row">
+            <div class="col">
+              <label for="maxLoudness" class="form-label">Max Loudness: {{ maxLoudness * 100 }}</label>
+              <input v-model="maxLoudness" type="range" class="form-range" min="0" max="1" step="0.1" id="maxLoudness">
+            </div>
+            <div class="col">
+              <label for="maxValence" class="form-label">Max Valence: {{ maxValence * 100 }} </label>
+              <input v-model="maxValence" type="range" class="form-range" min="0" max="1" step="0.1" id="maxValence">
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <label for="maxEnergy" class="form-label">Max Energy: {{ maxEnergy * 100 }}</label>
+              <input v-model="maxEnergy" type="range" class="form-range" min="0" max="1" step="0.1" id="maxEnergy">
+            </div>
+            <div class="col">
+              <label for="maxAcoustic" class="form-label">Max Acoustic: {{ maxAcoustic * 100 }}</label>
+              <input v-model="maxAcoustic" type="range" class="form-range" min="0" max="1" step="0.1" id="maxAcoustic">
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div v-if="tracksFound.length > 0" class="row m-5 text-center">
         <div class="col">
           <div class="row text-left">
-            <!--        <label v-if="tracksFound.length > 8" for="playlistName" class="col col-form-label-lg">Playlist Name</label>-->
             <div v-if="tracksFound.length > 8" class="col-8">
               <input
                   v-model="playlistName"
@@ -167,7 +191,11 @@ export default {
       tracksFound: [],
       playlistName: "",
       saved: false,
-      ssoUrl: ""
+      ssoUrl: "",
+      maxLoudness: 1,
+      maxEnergy: 1,
+      maxValence: 1,
+      maxAcoustic: 1,
     }
   },
   created() {
@@ -244,6 +272,10 @@ export default {
       }
       const paramString = new URLSearchParams(Object.entries({
         seed_tracks: seed_tracks.join(','),
+        max_loudness: self.maxLoudness,
+        max_valence: self.maxValence,
+        max_energy: self.maxEnergy,
+        max_acousticness: self.maxAcoustic,
         limit: 50
       })).toString()
 
