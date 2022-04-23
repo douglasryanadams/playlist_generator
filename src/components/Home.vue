@@ -73,7 +73,7 @@
 <!--            <div class="col">&nbsp;</div>-->
 <!--            <div class="col">-->
 <!--              <label for="minLoudness" class="form-label">Min Loudness: {{ minLoudness * 100 }} </label>-->
-<!--              <input v-model="minLoudness" type="range" class="form-range" min="0" v-bind:max="1" step="0.1"-->
+<!--              <input v-model="minLoudness" type="range" class="form-range" min="-48" max="0" step="2"-->
 <!--                     id="minLoudness">-->
 <!--            </div>-->
 <!--          </div>-->
@@ -81,7 +81,7 @@
 <!--            <div class="col">&nbsp;</div>-->
 <!--            <div class="col">-->
 <!--              <label for="maxLoudness" class="form-label">Max Loudness: {{ maxLoudness * 100 }}</label>-->
-<!--              <input v-model="maxLoudness" type="range" class="form-range" v-bind:min="0" max="1" step="0.1"-->
+<!--              <input v-model="maxLoudness" type="range" class="form-range" min="-48" max="0" step="2"-->
 <!--                     id="maxLoudness">-->
 <!--            </div>-->
 <!--          </div>-->
@@ -304,6 +304,10 @@ export default {
       console.debug('Adding songs to playlist')
       const self = this;
       const playlistUris = []
+
+      for (const track of self.tracksSelected) {
+        playlistUris.push(track.uri)
+      }
 
       for (const track of self.tracksFound) {
         playlistUris.push(track.uri)
