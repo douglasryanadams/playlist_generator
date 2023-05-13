@@ -1,31 +1,45 @@
-# Playlist Generator
+# playlist-generator
+
+Playlist Generator
 
 This repo contains a very simple web tool for generating Spotify playlists based on recommendations from a single song. It's approximate to "saving" the "radio" playlist in Spotify.
 
 After the user signs in with their Spotify account and saves the playlist, it will appear in their Spotify account.
 
-## Known Bugs
+## Recommended IDE Setup
 
-- [ ] Site requires re-signing in after about an hour
-- [x] First search fails when loaded fresh
-- [x] Limit seed songs to 5, require 3
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
 
-# Commands
+## Customize configuration
 
-## Project setup
-```
+See [Vite Configuration Reference](https://vitejs.dev/config/).
+
+## Project Setup
+
+```sh
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
-npm run serve
+### Compile and Hot-Reload for Development
+
+```sh
+npm run dev
 ```
 
-### Compiles and minifies for production
-```
+### Compile and Minify for Production
+
+```sh
 npm run build
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Run Unit Tests with [Vitest](https://vitest.dev/)
+
+```sh
+npm run test:unit
+```
+
+### Lint with [ESLint](https://eslint.org/)
+
+```sh
+npm run lint
+```
