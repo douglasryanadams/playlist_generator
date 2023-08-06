@@ -1,10 +1,10 @@
 <template>
   <div class="grid">
     <div class="col-5">
-      <SelectedSongs/>
+      <SelectedSongs />
     </div>
     <div class="col-7">
-      <SongSearch/>
+      <SongSearch />
     </div>
   </div>
 </template>
@@ -14,6 +14,4 @@ import SelectedSongs from "../components/SelectedSongs";
 import SongSearch from "../components/SongSearch";
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>
