@@ -56,7 +56,7 @@ const generatePlaylist = async (event) => {
 
   const params = {
     seed_tracks: seedTracks.join(","),
-    limit: 47,
+    limit: 72,
   };
 
   const paramString = new URLSearchParams(Object.entries(params)).toString();

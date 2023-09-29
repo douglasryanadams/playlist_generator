@@ -16,7 +16,7 @@ const utcToLocalTime = (timestamp) => {
 
 const downloadRecentlyPlayed = async (event) => {
   const params = {
-    limit: 50,
+    limit: 75,
   };
   const paramString = new URLSearchParams(Object.entries(params)).toString();
   const response = await fetch(
