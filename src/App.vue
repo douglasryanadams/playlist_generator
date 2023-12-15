@@ -27,7 +27,7 @@ const fourHoursAgoReadable = () => {
 const downloadRecentlyPlayed = async (event) => {
   console.log(new Date(fourHoursAgo()).toString())
   const params = {
-    limit: 5,
+    limit: 50,
     after: fourHoursAgo(),
   };
   const paramString = new URLSearchParams(Object.entries(params)).toString();
