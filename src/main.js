@@ -38,7 +38,7 @@ app.component("TabMenu", TabMenu);
 app.provide(
   "redirect-uri",
   process.env.NODE_ENV === "production"
-    ? "https://playlist.builtonbits.com"
+    ? "https://mixtapestudy.com"
     : "http://localhost:5173"
 );
 app.provide("handle-expired-token", async (response, spotifyTokenStore) => {
