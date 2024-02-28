@@ -11,7 +11,7 @@
 import { inject } from "vue";
 
 const CLIENT_ID = "b5881a3f486f4533803ebdb7263a5996";
-const SCOPE = "playlist-modify-public user-read-recently-played";
+const SCOPE = "playlist-modify-public playlist-modify-private user-read-recently-played";
 const STATE = Math.random().toString().substring(2);
 
 const redirectUri = inject("redirect-uri");
