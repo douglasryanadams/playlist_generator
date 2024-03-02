@@ -19,6 +19,11 @@ const router = createRouter({
       name: "playlist-generation",
       component: () => import("@/views/PlaylistGeneration"),
     },
+    {
+      path: "/listening-data",
+      name: "listening-data",
+      component: () => import("@/views/ListeningData.vue")
+    }
   ],
 });
 

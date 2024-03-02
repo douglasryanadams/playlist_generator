@@ -25,8 +25,9 @@ const signout = (event) => {
           severity="info"
           v-if="route.name === 'playlist-generation'"
           @click="() => router.push({ name: 'song-selection' })"
+          class="mr-3"
       />
-      <RecentlyPlayed />
+      <RecentlyPlayed/>
       <Button
           label="Sign Out"
           icon="pi pi-times"
