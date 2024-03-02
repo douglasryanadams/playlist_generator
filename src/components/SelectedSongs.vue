@@ -42,7 +42,7 @@ import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-const handleExpiredToken = inject("handle-expired-token");
+const handleError = inject("handle-error");
 const truncate = inject("truncate");
 
 const songStore = useSongsStore();
@@ -64,7 +64,7 @@ const generatePlaylist = async (event) => {
     "https://api.spotify.com/v1/recommendations?" + paramString,
     { headers: { Authorization: "Bearer " + spotifyTokenStore.token } }
   );
-  handleExpiredToken(response, spotifyTokenStore);
+  await handleError(response, spotifyTokenStore);
 
   const playlistTracks = [];
   for (const song of songStore.selectedSongs) {

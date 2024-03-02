@@ -24,7 +24,7 @@ import { inject, onMounted } from "vue";
 import { useSpotifyTokenStore } from "../stores/spotifyTokenStore";
 import { useRouter } from "vue-router";
 
-const handleExpiredToken = inject("handle-expired-token");
+const handleError = inject("handle-error");
 
 const spotifyTokenStore = useSpotifyTokenStore();
 const router = useRouter();
@@ -43,7 +43,7 @@ onMounted(async () => {
     const response = await fetch("https://api.spotify.com/v1/me", {
       headers: { Authorization: "Bearer " + spotifyTokenStore.token },
     });
-    handleExpiredToken(response, spotifyTokenStore);
+    await handleError(response, spotifyTokenStore);
 
     if (response.ok) {
       const rJson = await response.json();

@@ -30,7 +30,7 @@ import { inject, ref } from "vue";
 import { useSongsStore } from "../stores/songsStore";
 import { useSpotifyTokenStore } from "../stores/spotifyTokenStore";
 
-const handleExpiredToken = inject("handle-expired-token");
+const handleError = inject("handle-error");
 
 const songStore = useSongsStore();
 const spotifyTokenStore = useSpotifyTokenStore();
@@ -58,7 +58,7 @@ const savePlaylist = async (event) => {
       }),
     }
   );
-  handleExpiredToken(createPlaylistResponse, spotifyTokenStore);
+  await handleError(createPlaylistResponse, spotifyTokenStore);
   const cprJson = await createPlaylistResponse.json();
 
   const addTracksResponse = await fetch(
@@ -69,7 +69,7 @@ const savePlaylist = async (event) => {
       body: JSON.stringify({ uris: playlistUris }),
     }
   );
-  handleExpiredToken(addTracksResponse, spotifyTokenStore);
+  await handleError(addTracksResponse, spotifyTokenStore);
 
   window.open(`https://open.spotify.com/playlist/${cprJson.id}`, "_blank");
 };

@@ -41,7 +41,7 @@ app.provide(
     ? "https://mixtapestudy.com"
     : "http://localhost:5173"
 );
-app.provide("handle-expired-token", async (response, spotifyTokenStore) => {
+app.provide("handle-error", async (response, spotifyTokenStore) => {
   if (response.status === 401) {
     spotifyTokenStore.token = "";
     spotifyTokenStore.myId = "";

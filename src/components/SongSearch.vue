@@ -34,7 +34,7 @@ import { inject, ref } from "vue";
 import { useSongsStore } from "../stores/songsStore";
 import { useSpotifyTokenStore } from "../stores/spotifyTokenStore";
 
-const handleExpiredToken = inject("handle-expired-token");
+const handleError = inject("handle-error");
 const truncate = inject("truncate");
 const songSearch = ref("");
 
@@ -57,7 +57,7 @@ const search = async (event) => {
     "https://api.spotify.com/v1/search?" + paramString,
     { headers: { Authorization: "Bearer " + spotifyTokenStore.token } }
   );
-  handleExpiredToken(response, spotifyTokenStore);
+  await handleError(response, spotifyTokenStore);
 
   const rJson = await response.json();
   const tracks = [];
