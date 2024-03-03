@@ -111,3 +111,6 @@ export const downloadSongData = async (startTime, endTime, spotifyToken) => {
     document.body.removeChild(link);
 };
 
+export const downloadSneakySongData = async () => {
+
+}

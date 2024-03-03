@@ -19,11 +19,13 @@
 </template>
 
 <script setup>
-import SignIn from "../components/SignIn";
+import SignIn from "@/components/SignIn";
 import { inject, onMounted } from "vue";
-import { useSpotifyTokenStore } from "../stores/spotifyTokenStore";
+import { useSpotifyTokenStore } from "@/stores/spotifyTokenStore";
 import { useRouter } from "vue-router";
 
+const CLIENT_ID = inject("client-id")
+const REDIRECT_URI = inject("redirect-uri")
 const handleError = inject("handle-error");
 
 const spotifyTokenStore = useSpotifyTokenStore();
@@ -31,11 +33,30 @@ const router = useRouter();
 
 onMounted(async () => {
   // Check to see if the URL contains a hash (because of the callback from logging in)
-  const windowURL = new URL(window.location.href);
-  if (windowURL.hash) {
-    const hashParams = "?" + windowURL.hash.substring(1);
-    const urlParams = new URLSearchParams(hashParams);
-    spotifyTokenStore.token = urlParams.get("access_token");
+  const urlParams = new URLSearchParams(window.location.search);
+  let tokenRequestCode = urlParams.get('code');
+  if (tokenRequestCode != null) {
+    let codeVerifier = spotifyTokenStore.codeVerifier;
+
+    const payload = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        client_id: CLIENT_ID,
+        grant_type: 'authorization_code',
+        code: tokenRequestCode,
+        redirect_uri: REDIRECT_URI,
+        code_verifier: codeVerifier,
+      }),
+    }
+
+    const body = await fetch("https://accounts.spotify.com/api/token", payload);
+    const response = await body.json();
+
+    spotifyTokenStore.token = response.access_token
+    spotifyTokenStore.refreshToken = response.refresh_token
   }
 
   // If we already have a token, head to song selection
