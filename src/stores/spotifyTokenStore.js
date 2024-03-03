@@ -5,8 +5,8 @@ export const useSpotifyTokenStore = defineStore(
   "spotifyToken",
   () => {
     const token = ref("");
-    const refreshToken = ref("")
-    const codeVerifier = ref("")
+    const refreshToken = ref("");
+    const codeVerifier = ref("");
     const myId = ref("");
     const myName = ref("");
     const signedIn = ref(false);

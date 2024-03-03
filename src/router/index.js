@@ -22,8 +22,8 @@ const router = createRouter({
     {
       path: "/listening-data",
       name: "listening-data",
-      component: () => import("@/views/ListeningData.vue")
-    }
+      component: () => import("@/views/ListeningData.vue"),
+    },
   ],
 });
 

@@ -20,7 +20,7 @@ import Column from "primevue/column";
 import InlineMessage from "primevue/inlinemessage";
 import TabMenu from "primevue/tabmenu";
 
-const CLIENT_ID = "b5881a3f486f4533803ebdb7263a5996"
+const CLIENT_ID = "b5881a3f486f4533803ebdb7263a5996";
 const app = createApp(App);
 
 app.use(PrimeVue);
@@ -46,26 +46,25 @@ app.provide(
 );
 app.provide("handle-error", async (response, spotifyTokenStore) => {
   if (response.status === 401) {
-
     // refresh token that has been previously stored
     const refreshToken = spotifyTokenStore.refreshToken;
 
     const payload = {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
-        grant_type: 'refresh_token',
+        grant_type: "refresh_token",
         refresh_token: refreshToken,
-        client_id: CLIENT_ID
+        client_id: CLIENT_ID,
       }),
-    }
+    };
     const body = await fetch("https://accounts.spotify.com/api/token", payload);
     const response = await body.json();
 
-    spotifyTokenStore.token = response.access_token
-    spotifyTokenStore.refreshToken = response.refresh_token
+    spotifyTokenStore.token = response.access_token;
+    spotifyTokenStore.refreshToken = response.refresh_token;
   }
 });
 

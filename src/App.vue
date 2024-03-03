@@ -1,7 +1,8 @@
 <script setup>
-import {useRoute, useRouter} from "vue-router";
-import {useSpotifyTokenStore} from "@/stores/spotifyTokenStore";
+import { useRoute, useRouter } from "vue-router";
+import { useSpotifyTokenStore } from "@/stores/spotifyTokenStore";
 import RecentlyPlayed from "@/components/RecentlyPlayed.vue";
+import ActivityMonitor from "@/components/ActivityMonitor.vue";
 
 const router = useRouter();
 const route = useRoute();
@@ -10,9 +11,8 @@ const spotifyTokenStore = useSpotifyTokenStore();
 
 const signout = (event) => {
   spotifyTokenStore.clear();
-  router.push({name: "sign-in"});
+  router.push({ name: "sign-in" });
 };
-
 </script>
 
 <template>
@@ -20,26 +20,27 @@ const signout = (event) => {
     <div class="site-title">Playlist Generator</div>
     <div class="flex ml-auto">
       <Button
-          label="Back"
-          icon="pi pi-arrow-left"
-          severity="info"
-          v-if="route.name === 'playlist-generation'"
-          @click="() => router.push({ name: 'song-selection' })"
-          class="mr-3"
+        label="Back"
+        icon="pi pi-arrow-left"
+        severity="info"
+        v-if="route.name === 'playlist-generation'"
+        @click="() => router.push({ name: 'song-selection' })"
+        class="mr-3"
       />
-      <RecentlyPlayed/>
+      <RecentlyPlayed />
       <Button
-          label="Sign Out"
-          icon="pi pi-times"
-          severity="danger"
-          @click="signout"
-          v-if="spotifyTokenStore.signedIn"
-          class="ml-3"
+        label="Sign Out"
+        icon="pi pi-times"
+        severity="danger"
+        @click="signout"
+        v-if="spotifyTokenStore.signedIn"
+        class="ml-3"
       />
     </div>
+    <ActivityMonitor />
   </div>
   <div class="px-5">
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
