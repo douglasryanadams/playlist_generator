@@ -22,8 +22,6 @@ const redirectUri = inject("redirect-uri");
 if (!redirectUri) {
   throw new Error("Redirect URI not found");
 }
-console.debug("redirect-uri: ", redirectUri);
-
 const generateRandomString = (length) => {
   const possible =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

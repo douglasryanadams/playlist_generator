@@ -6,28 +6,38 @@ const spotifyTokenStore = useSpotifyTokenStore();
 const listenedSongs = useListenedSongsStore();
 
 const handleError = inject("handle-error");
+const truncate = inject("truncate");
 
 const checkCurrentListening = async () => {
-  console.log("Checking what you're currently listening to");
-  const response = await fetch(
-    "https://api.spotify.com/v1/me/player/currently-playing",
-    { headers: { Authorization: `Bearer ${spotifyTokenStore.token}` } }
-  );
-  await handleError(response, spotifyTokenStore);
-  const responseJson = await response.json();
-  console.log(responseJson);
-
-  if (responseJson.item) {
-    console.log(
-      "Listening to:",
-      responseJson.item.id,
-      " - ",
-      responseJson.item.name
+  try {
+    const response = await fetch(
+      "https://api.spotify.com/v1/me/player/currently-playing",
+      { headers: { Authorization: `Bearer ${spotifyTokenStore.token}` } }
     );
-    listenedSongs.addListenedTrack({
-      id: responseJson.item.id,
-      timestamp: responseJson.timestamp,
-    });
+    await handleError(response, spotifyTokenStore);
+    const responseJson = await response.json();
+
+    if (responseJson.item) {
+      const track = responseJson.item;
+      const context = responseJson.context;
+      console.log("Current track:", track.id);
+      listenedSongs.addListenedTrack({
+        id: track.id,
+        name: track.name,
+        artist: truncate(track.artists.map(({ name }) => name).join(", "), 20),
+        durationMilliseconds: track.duration_ms,
+        url: track.external_urls.spotify,
+        uri: track.uri,
+        contextType: context.type,
+        contextUrl: context.external_urls.spotify,
+        contextUri: context.uri,
+        timestamp: responseJson.timestamp,
+        timestampLocal: new Date(responseJson.timestamp).toString(),
+        userId: spotifyTokenStore.myId,
+      });
+    }
+  } catch (error) {
+    console.error(error);
   }
 };
 

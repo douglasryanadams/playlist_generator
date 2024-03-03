@@ -2,6 +2,7 @@
 import { inject, ref } from "vue";
 import { useSpotifyTokenStore } from "@/stores/spotifyTokenStore";
 import { downloadSongData } from "@/downloadSongData";
+import { useListenedSongsStore } from "@/stores/listenedSongsStore";
 
 const handleError = inject("handle-error");
 const spotifyTokenStore = useSpotifyTokenStore();
@@ -27,6 +28,7 @@ const downloadData = async (event) => {
 
 <template>
   <h2>Select a Date and Click "Download Listening History"</h2>
+  <p>(This will only retrieve the most recent 50 songs)</p>
   <Calendar v-model="date" class="mb-2" inline showWeek />
   <br />
   <InlineMessage v-if="errorMessage" severity="error" class="ml-3">{{
