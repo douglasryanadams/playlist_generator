@@ -81,9 +81,10 @@ const checkRecentlyPlayed = async () => {
   }
 };
 
-await checkRecentlyPlayed()
+if (spotifyTokenStore.token) {
+  await checkRecentlyPlayed()
+}
 setInterval(checkRecentlyPlayed, 30_000)
-
 </script>
 
 <template>
