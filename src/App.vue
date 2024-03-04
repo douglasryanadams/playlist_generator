@@ -33,7 +33,7 @@ const signout = (event) => {
         icon="pi pi-times"
         severity="danger"
         @click="signout"
-        v-if="spotifyTokenStore.signedIn"
+        v-if="spotifyTokenStore.token"
         class="ml-3"
       />
     </div>

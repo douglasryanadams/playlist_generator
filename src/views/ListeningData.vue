@@ -39,7 +39,7 @@ const downloadData = async (event) => {
     :icon="'pi ' + (downloadingData ? 'pi-spin pi-spinner' : 'pi-download')"
     severity="help"
     @click="downloadData"
-    v-if="spotifyTokenStore.signedIn && !errorMessage"
+    v-if="spotifyTokenStore.token && !errorMessage"
     :disabled="downloadingData"
   />
 </template>

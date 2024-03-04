@@ -41,8 +41,49 @@ const checkCurrentListening = async () => {
   }
 };
 
-await checkCurrentListening();
-setInterval(checkCurrentListening, 10_000);
+// await checkCurrentListening();
+// setInterval(checkCurrentListening, 10_000);
+
+const checkRecentlyPlayed = async () => {
+  console.info("Checking recently played and caching them")
+  try {
+    const response = await fetch(
+      "https://api.spotify.com/v1/me/player/recently-played?limit=50",
+      { headers: { Authorization: `Bearer ${spotifyTokenStore.token}` } }
+    );
+    await handleError(response, spotifyTokenStore);
+    const responseJson = await response.json();
+    const listenedTracks = [];
+
+    for (const item of responseJson.items) {
+      const track = item.track;
+      const context = item.context;
+      listenedTracks.push({
+        id: track.id,
+        name: track.name,
+        artist: truncate(track.artists.map(({ name }) => name).join(", "), 20),
+        durationMilliseconds: track.duration_ms,
+        url: track.external_urls.spotify,
+        uri: track.uri,
+        contextType: context.type,
+        contextUrl: context.external_urls.spotify,
+        contextUri: context.uri,
+        timestamp: item.played_at,
+        timestampLocal: new Date(item.played_at).toString(),
+        userId: spotifyTokenStore.myId,
+      });
+
+    }
+
+    listenedSongs.addListenedTracks(listenedTracks);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+await checkRecentlyPlayed()
+setInterval(checkRecentlyPlayed, 30_000)
+
 </script>
 
 <template>

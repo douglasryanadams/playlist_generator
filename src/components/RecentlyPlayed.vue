@@ -47,7 +47,7 @@ const downloadSongDataAction = async (event) => {
     "
     severity="help"
     @click="downloadRecentlyPlayed"
-    v-if="spotifyTokenStore.signedIn && !errorMessage"
+    v-if="spotifyTokenStore.token && !errorMessage"
     :disabled="buildingRecentlyPlayed"
   />
   -->
@@ -58,7 +58,7 @@ const downloadSongDataAction = async (event) => {
     "
     severity="help"
     @click="downloadSongDataAction"
-    v-if="spotifyTokenStore.signedIn && !errorMessage"
+    v-if="spotifyTokenStore.token && !errorMessage"
     :disabled="buildingRecentlyPlayed"
   />
 </template>

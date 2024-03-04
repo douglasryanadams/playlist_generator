@@ -70,7 +70,6 @@ onMounted(async () => {
       const rJson = await response.json();
       spotifyTokenStore.myId = rJson.id;
       spotifyTokenStore.myName = rJson.display_name;
-      spotifyTokenStore.signedIn = true;
     }
     router.push({ name: "song-selection" });
   }

@@ -9,7 +9,6 @@ export const useSpotifyTokenStore = defineStore(
     const codeVerifier = ref("");
     const myId = ref("");
     const myName = ref("");
-    const signedIn = ref(false);
 
     function clear() {
       this.token = "";
@@ -17,9 +16,8 @@ export const useSpotifyTokenStore = defineStore(
       this.codeVerifier = "";
       this.myId = "";
       this.myName = "";
-      this.signedIn = false;
     }
-    return { token, refreshToken, codeVerifier, myId, myName, signedIn, clear };
+    return { token, refreshToken, codeVerifier, myId, myName, clear };
   },
   { persist: true }
 );
