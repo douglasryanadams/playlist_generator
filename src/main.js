@@ -45,7 +45,7 @@ app.provide(
     : "http://localhost:5173"
 );
 app.provide("handle-error", async (response, spotifyTokenStore) => {
-  if (response.status === 401) {
+  if (response.status > 299) {
     // refresh token that has been previously stored
     const refreshToken = spotifyTokenStore.refreshToken;
 
