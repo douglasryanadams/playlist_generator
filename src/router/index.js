@@ -29,6 +29,11 @@ const router = createRouter({
       name: "listened-songs",
       component: () => import("@/views/ListenedSongs.vue"),
     },
+    {
+      path: "/csv-generator",
+      name: "csv-generator",
+      component: () => import("@/views/CsvGenerator.vue"),
+    },
   ],
 });
 

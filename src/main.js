@@ -19,6 +19,7 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import InlineMessage from "primevue/inlinemessage";
 import TabMenu from "primevue/tabmenu";
+import FileUpload from 'primevue/fileupload'
 
 const CLIENT_ID = "b5881a3f486f4533803ebdb7263a5996";
 const HOME_URI = process.env.NODE_ENV === "production"
@@ -40,6 +41,7 @@ app.component("DataTable", DataTable);
 app.component("Column", Column);
 app.component("InlineMessage", InlineMessage);
 app.component("TabMenu", TabMenu);
+app.component("FileUpload", FileUpload);
 
 app.provide(
   "redirect-uri", HOME_URI
