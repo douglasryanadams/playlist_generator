@@ -45,7 +45,7 @@ const checkCurrentListening = async () => {
 // setInterval(checkCurrentListening, 10_000);
 
 const checkRecentlyPlayed = async () => {
-  console.info("Checking recently played and caching them")
+  console.info("Checking recently played and caching them");
   try {
     const response = await fetch(
       "https://api.spotify.com/v1/me/player/recently-played?limit=50",
@@ -72,7 +72,6 @@ const checkRecentlyPlayed = async () => {
         timestampLocal: new Date(item.played_at).toString(),
         userId: spotifyTokenStore.myId,
       });
-
     }
 
     listenedSongs.addListenedTracks(listenedTracks);
@@ -82,9 +81,9 @@ const checkRecentlyPlayed = async () => {
 };
 
 if (spotifyTokenStore.token) {
-  await checkRecentlyPlayed()
+  await checkRecentlyPlayed();
 }
-setInterval(checkRecentlyPlayed, 30_000)
+setInterval(checkRecentlyPlayed, 30_000);
 </script>
 
 <template>

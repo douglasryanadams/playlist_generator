@@ -39,7 +39,7 @@ function generateAndDownloadCSV(recentlyPlayed) {
   document.body.removeChild(link);
 }
 
-async function retrieveTrackFeatures(trackIds, spotifyToken) {
+export async function retrieveTrackFeatures(trackIds, spotifyToken) {
   const trackIdParams = new URLSearchParams({ ids: trackIds });
   const trackFeaturesResponse = await fetch(
     `https://api.spotify.com/v1/audio-features?${trackIdParams}`,

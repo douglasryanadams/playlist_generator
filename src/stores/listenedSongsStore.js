@@ -20,8 +20,10 @@ export const useListenedSongsStore = defineStore(
 
     function addListenedTracks(trackList) {
       // This uses the timestamp of the last listened track
-        const orderedTrackList = Array.from(trackList)
-        orderedTrackList.sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp))
+      const orderedTrackList = Array.from(trackList);
+      orderedTrackList.sort(
+        (a, b) => new Date(a.timestamp) - new Date(b.timestamp)
+      );
 
       const lastTrack =
         this.listenedSongs.length > 0
@@ -29,7 +31,7 @@ export const useListenedSongsStore = defineStore(
           : { timestamp: "1970-01-01T00:00:00.000Z" };
       for (const track of orderedTrackList) {
         if (new Date(track.timestamp) > new Date(lastTrack.timestamp)) {
-            console.info("Found new track: ", track.id)
+          console.info("Found new track: ", track.id);
           this.listenedSongs.push(track);
         }
       }

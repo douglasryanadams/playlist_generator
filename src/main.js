@@ -19,12 +19,13 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import InlineMessage from "primevue/inlinemessage";
 import TabMenu from "primevue/tabmenu";
-import FileUpload from 'primevue/fileupload'
+import FileUpload from "primevue/fileupload";
 
 const CLIENT_ID = "b5881a3f486f4533803ebdb7263a5996";
-const HOME_URI = process.env.NODE_ENV === "production"
+const HOME_URI =
+  process.env.NODE_ENV === "production"
     ? "https://mixtapestudy.com"
-    : "http://localhost:5173"
+    : "http://localhost:5173";
 const app = createApp(App);
 
 app.use(PrimeVue);
@@ -43,12 +44,10 @@ app.component("InlineMessage", InlineMessage);
 app.component("TabMenu", TabMenu);
 app.component("FileUpload", FileUpload);
 
-app.provide(
-  "redirect-uri", HOME_URI
-);
+app.provide("redirect-uri", HOME_URI);
 app.provide("handle-error", async (response, spotifyTokenStore) => {
   if (response.status > 299) {
-    console.warn("Error received with status: ", response.status)
+    console.warn("Error received with status: ", response.status);
     // refresh token that has been previously stored
     const refreshToken = spotifyTokenStore.refreshToken;
 
@@ -63,12 +62,15 @@ app.provide("handle-error", async (response, spotifyTokenStore) => {
         client_id: CLIENT_ID,
       }),
     };
-    const tokenResponse = await fetch("https://accounts.spotify.com/api/token", payload);
+    const tokenResponse = await fetch(
+      "https://accounts.spotify.com/api/token",
+      payload
+    );
 
     if (tokenResponse.status > 299) {
-      spotifyTokenStore.clear()
-      window.location.href = HOME_URI
-      return
+      spotifyTokenStore.clear();
+      window.location.href = HOME_URI;
+      return;
     }
     const tokenResponseJson = await tokenResponse.json();
 

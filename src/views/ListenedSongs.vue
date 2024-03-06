@@ -1,15 +1,23 @@
 <script setup>
 import { useListenedSongsStore } from "@/stores/listenedSongsStore";
-import {useSpotifyTokenStore} from "@/stores/spotifyTokenStore";
+import { useSpotifyTokenStore } from "@/stores/spotifyTokenStore";
 
 const listenedSongs = useListenedSongsStore();
-const spotifyTokenStore = useSpotifyTokenStore()
+const spotifyTokenStore = useSpotifyTokenStore();
 </script>
 
 <template>
-  <DataTable :value="listenedSongs.listenedSongs.filter((song) => song.userId === spotifyTokenStore.myId)" paginator :rows="20">
+  <DataTable
+    :value="
+      listenedSongs.listenedSongs.filter(
+        (song) => song.userId === spotifyTokenStore.myId
+      )
+    "
+    paginator
+    :rows="20"
+  >
     <column header="#">
-      <template #body="slotProps">{{slotProps.index + 1}}</template>
+      <template #body="slotProps">{{ slotProps.index + 1 }}</template>
     </column>
     <Column field="id" header="ID" />
     <Column field="name" header="Name" />
