@@ -1,7 +1,7 @@
 <script setup>
-import { inject, ref } from "vue";
-import { useSpotifyTokenStore } from "@/stores/spotifyTokenStore";
-import { retrieveTrackFeatures } from "@/downloadSongData";
+import {inject, ref} from "vue";
+import {useSpotifyTokenStore} from "@/stores/spotifyTokenStore";
+import {retrieveTrackFeatures} from "@/downloadSongData";
 
 const handleError = inject("handle-error");
 
@@ -40,27 +40,28 @@ function generateCsv(trackList) {
 
   document.body.removeChild(link);
 }
+
 const retrieveTrack = async (song, songData) => {
   const artistSearchString = song.artistName.replace(/["']/g, "");
   const trackSearchString = song.trackName.replace(/["']/g, "");
   const paramString = new URLSearchParams(
-    Object.entries({
-      q: `artist:"${artistSearchString}" track:"${trackSearchString}"`,
-      type: "track",
-      limit: 1,
-    })
+      Object.entries({
+        q: `artist:"${artistSearchString}" track:"${trackSearchString}"`,
+        type: "track",
+        limit: 1,
+      })
   ).toString();
   const songSearchResponse = await fetch(
-    "https://api.spotify.com/v1/search?" + paramString,
-    { headers: { Authorization: "Bearer " + spotifyTokenStore.token } }
+      "https://api.spotify.com/v1/search?" + paramString,
+      {headers: {Authorization: "Bearer " + spotifyTokenStore.token}}
   );
   await handleError(songSearchResponse, spotifyTokenStore);
-  songData.push({ song: song, response: await songSearchResponse.json() });
+  songData.push({song: song, response: await songSearchResponse.json()});
 };
 
 const pullSongData = async (jsonData) => {
   const songData = [];
-  const songChunkSize = 5;
+  const songChunkSize = 2;
   for (let i = 0; i < jsonData.length; i += songChunkSize) {
     const songs = jsonData.slice(i, i + songChunkSize);
     const promises = [];
@@ -74,12 +75,16 @@ const pullSongData = async (jsonData) => {
   for (const songDatum of songData) {
     const song = songDatum.song;
     const track = songDatum.response.tracks.items[0];
+    if (!track) {
+      console.error("No data found for song: ", song)
+      continue
+    }
     const trackId = track.id;
 
     trackList.push({
       id: trackId,
       name: track.name,
-      artist: track.artists.map(({ name }) => name).join(", "),
+      artist: track.artists.map(({name}) => name).join(", "),
       durationMilliseconds: track.duration_ms,
       url: track.external_urls.spotify,
       uri: track.uri,
@@ -95,28 +100,41 @@ const pullSongData = async (jsonData) => {
     for (const track of songs) trackIds.push(track.id);
 
     const trackFeaturesById = await retrieveTrackFeatures(
-      trackIds,
-      spotifyTokenStore.token
+        trackIds,
+        spotifyTokenStore.token
     );
 
     for (const track of songs) {
       const features = trackFeaturesById[track.id];
-      track["tempo"] = features.tempo;
-      track["timeSignature"] = features.time_signature;
-      track["loudness"] = features.loudness;
-      track["key"] = features.key;
-      track["mode"] = features.mode;
-      track["valence"] = features.valence;
-      track["danceability"] = features.danceability;
-      track["energy"] = features.energy;
-      track["instrumentalness"] = features.instrumentalness;
-      track["acousticness"] = features.acousticness;
+      if (features) {
+        track["tempo"] = features.tempo;
+        track["timeSignature"] = features.time_signature;
+        track["loudness"] = features.loudness;
+        track["key"] = features.key;
+        track["mode"] = features.mode;
+        track["valence"] = features.valence;
+        track["danceability"] = features.danceability;
+        track["energy"] = features.energy;
+        track["instrumentalness"] = features.instrumentalness;
+        track["acousticness"] = features.acousticness;
+      } else {
+        track["tempo"] = null;
+        track["timeSignature"] = null;
+        track["loudness"] = null;
+        track["key"] = null;
+        track["mode"] = null;
+        track["valence"] = null;
+        track["danceability"] = null;
+        track["energy"] = null;
+        track["instrumentalness"] = null;
+        track["acousticness"] = null;
+      }
     }
   }
 
   trackList.sort((a, b) => a.endTime.localeCompare(b.endTime));
 
-  console.log(trackList);
+  console.log("Tracks found:", trackList.length);
   generateCsv(trackList);
 };
 
@@ -138,21 +156,25 @@ const interceptUpload = async (event) => {
 <template>
   <h2>Generate CSV from Song Data</h2>
   <p>To request your data:</p>
-    <ol>
-      <li>Go to this page: <a href="https://www.spotify.com/us/account/privacy/">Spotify Privacy</a></li>
-      <li>Scroll to the bottom and click: "Request Data"</li>
-    </ol>
+  <ol>
+    <li>Go to this page: <a href="https://www.spotify.com/us/account/privacy/">Spotify Privacy</a></li>
+    <li>Scroll to the bottom and click: "Request Data"</li>
+  </ol>
   <p>Once you've received an e-mail from Spotify:</p>
-    <ol>
-      <li>Click "Download" in the e-mail</li>
-      <li>Unzip the zip file you receive</li>
-      <li>Find the file in the unzipped folder named: "StreamingHistory_music_0.json"</li>
-      <li>Click the "Upload Song Data" button on this page (below) and select your file</li>
-    </ol>
-  <p>After completing these steps you should receive a download of the CSV containing your data within a couple minutes</p>
+  <ol>
+    <li>Click "Download" in the e-mail</li>
+    <li>Unzip the zip file you receive</li>
+    <li>Find the file in the unzipped folder named: "StreamingHistory_music_0.json"</li>
+    <li>Click the "Upload Song Data" button on this page (below) and select your file</li>
+  </ol>
+  <p>After completing these steps you should receive a download of the CSV containing your data within a couple
+    minutes</p>
 
-  <FileUpload :disabled="processing" chooseLabel="Upload Song Data" mode="basic" customUpload @uploader="interceptUpload" auto>
-    <template #uploadicon><div class="mr-3"><i :class="processing ? 'pi pi-spin pi-spinner' : 'pi pi-upload' "/></div></template>
+  <FileUpload :disabled="processing" chooseLabel="Upload Song Data" mode="basic" customUpload
+              @uploader="interceptUpload" auto>
+    <template #uploadicon>
+      <div class="mr-3"><i :class="processing ? 'pi pi-spin pi-spinner' : 'pi pi-upload' "/></div>
+    </template>
   </FileUpload>
 </template>
 
